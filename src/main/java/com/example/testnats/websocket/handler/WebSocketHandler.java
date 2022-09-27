@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -27,6 +28,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         super.handleTextMessage(session, message);
         String msg = message.getPayload();
         log.info("msg: {}", msg);
+
+        // TODO: 메시지 받을 시에 대한 처리
+        // session.sendMessage(textMessage);
     }
 
     @Override
@@ -34,5 +38,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
         super.afterConnectionClosed(session, status);
         sessions.remove(session);
         log.info("client{} closed", session.getRemoteAddress());
+    }
+
+    // 서버에서 Websocket으로 차량 정보 전달 시 사용됨
+    public Set<WebSocketSession> getSessions() {
+        return sessions;
     }
 }
