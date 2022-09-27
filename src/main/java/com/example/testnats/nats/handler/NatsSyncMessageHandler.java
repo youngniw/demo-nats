@@ -21,16 +21,16 @@ public class NatsSyncMessageHandler {
     private final Connection natsConnection;
     private Subscription subscription;
 
-    @Autowired
-    public NatsSyncMessageHandler(Connection natsConnection) {
-        this.natsConnection = natsConnection;
-    }
-
     @Value("${nats.stream.subject}")
     private String subject;
     @Value("${nats.stream.queue}")
     private String queue;
     private MessageHandlerThread thread;
+
+    @Autowired
+    public NatsSyncMessageHandler(Connection natsConnection) {
+        this.natsConnection = natsConnection;
+    }
 
     @PostConstruct
     private void init() {
@@ -50,7 +50,7 @@ public class NatsSyncMessageHandler {
         thread.interrupt();
     }
 
-    // Request에 대한 Response(응답)
+    // Request에 대한 Response(응답) -> subscribe 내용
     public class MessageHandlerThread extends Thread {
         public void run() {
             System.out.println(this.getName() + ": Message Thread is running...");
@@ -59,11 +59,14 @@ public class NatsSyncMessageHandler {
                     Message message = subscription.nextMessage(1000);
                     if (message != null) {
                         String data = new String(message.getData(), StandardCharsets.UTF_8);
-                        log.info(String.format("Received Message from %s: %s", message.getReplyTo(), data));
+                        log.info(String.format("Received Message from %s: %s", message.getSubject(), data));
 
                         /* 데이터 가공해서 처리 */
 
-                        natsConnection.publish(message.getReplyTo(), "OK".getBytes());      // 요청에 대한 응답 반환
+                        if (message.getReplyTo() != null)
+                            natsConnection.publish(message.getReplyTo(), "OK".getBytes());      // 요청에 대한 응답 반환
+                        else
+                            ;      // 다시 응답 반환
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
