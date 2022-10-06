@@ -25,9 +25,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        super.handleTextMessage(session, message);
         String msg = message.getPayload();
-        log.info("msg: {}", msg);
+        log.info("From {}, Msg: {}", session.getRemoteAddress(), msg);
 
         // TODO: 메시지 받을 시에 대한 처리
         // session.sendMessage(textMessage);

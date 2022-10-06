@@ -23,6 +23,7 @@ public class NatsConfig {
     Connection initConnection() throws IOException, InterruptedException {
         Options options = new Options.Builder()
                 .server(uri)
+                .userInfo("admin", "admin_")
                 .maxReconnects(10)
                 .reconnectWait(Duration.ofSeconds(5))
                 .connectionTimeout(Duration.ofSeconds(5))
@@ -35,6 +36,8 @@ public class NatsConfig {
                         log.error("Disconnected to Nats Server, reconnect attempt in seconds");
                     } else if (type == ConnectionListener.Events.CLOSED) {
                         log.info("Closed connection with Nats Server");
+                    } else {
+                        log.info("Connection Type: {}", type.toString());
                     }
                 })
                 .build();
