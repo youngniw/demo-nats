@@ -1,10 +1,8 @@
-package com.example.testnats.dto;
+package com.example.demonats.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Builder

@@ -1,10 +1,10 @@
-package com.example.testnats.websocket.handler;
+package com.example.demonats.websocket.handler;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -17,7 +17,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private static final Set<WebSocketSession> sessions = new ConcurrentHashMap().newKeySet();
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
         sessions.add(session);
         log.info("client{} connect", session.getRemoteAddress());
@@ -33,7 +33,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) throws Exception {
         super.afterConnectionClosed(session, status);
         sessions.remove(session);
         log.info("client{} closed", session.getRemoteAddress());

@@ -1,6 +1,6 @@
-package com.example.testnats.nats.handler;
+package com.example.demonats.nats.handler;
 
-import com.example.testnats.service.VehicleService;
+import com.example.demonats.service.VehicleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nats.client.Connection;

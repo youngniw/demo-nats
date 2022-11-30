@@ -1,6 +1,6 @@
-package com.example.testnats.repository;
+package com.example.demonats.repository;
 
-import com.example.testnats.entity.Vehicle;
+import com.example.demonats.entity.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

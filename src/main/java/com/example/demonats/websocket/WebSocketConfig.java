@@ -1,6 +1,6 @@
-package com.example.testnats.websocket;
+package com.example.demonats.websocket;
 
-import com.example.testnats.websocket.handler.WebSocketHandler;
+import com.example.demonats.websocket.handler.WebSocketHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

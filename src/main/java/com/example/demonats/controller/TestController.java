@@ -1,8 +1,8 @@
-package com.example.testnats.controller;
+package com.example.demonats.controller;
 
-import com.example.testnats.dto.TelemetryDto;
-import com.example.testnats.nats.NatsComponent;
-import com.example.testnats.websocket.handler.WebSocketHandler;
+import com.example.demonats.dto.TelemetryDto;
+import com.example.demonats.nats.NatsComponent;
+import com.example.demonats.websocket.handler.WebSocketHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

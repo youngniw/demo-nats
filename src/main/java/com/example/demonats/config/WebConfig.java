@@ -1,4 +1,4 @@
-package com.example.testnats.config;
+package com.example.demonats.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;

@@ -1,12 +1,12 @@
-package com.example.testnats.service;
+package com.example.demonats.service;
 
-import com.example.testnats.dto.OperationLogDto;
-import com.example.testnats.dto.TelemetryDto;
-import com.example.testnats.dto.VehicleDto;
-import com.example.testnats.entity.OperationLog;
-import com.example.testnats.entity.Vehicle;
-import com.example.testnats.repository.OperationLogRepository;
-import com.example.testnats.repository.VehicleRepository;
+import com.example.demonats.dto.OperationLogDto;
+import com.example.demonats.dto.TelemetryDto;
+import com.example.demonats.dto.VehicleDto;
+import com.example.demonats.entity.OperationLog;
+import com.example.demonats.entity.Vehicle;
+import com.example.demonats.repository.OperationLogRepository;
+import com.example.demonats.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

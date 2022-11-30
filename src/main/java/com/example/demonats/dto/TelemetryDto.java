@@ -1,4 +1,4 @@
-package com.example.testnats.dto;
+package com.example.demonats.dto;
 
 import lombok.Getter;
 import lombok.ToString;

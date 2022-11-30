@@ -1,6 +1,6 @@
-package com.example.testnats.repository;
+package com.example.demonats.repository;
 
-import com.example.testnats.entity.OperationLog;
+import com.example.demonats.entity.OperationLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

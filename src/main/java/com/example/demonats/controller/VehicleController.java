@@ -1,12 +1,12 @@
-package com.example.testnats.controller;
+package com.example.demonats.controller;
 
-import com.example.testnats.dto.OperationLogDto;
-import com.example.testnats.dto.TelemetryDto;
-import com.example.testnats.dto.VehicleDto;
-import com.example.testnats.entity.Vehicle;
-import com.example.testnats.nats.NatsComponent;
-import com.example.testnats.service.VehicleService;
-import com.example.testnats.websocket.handler.WebSocketHandler;
+import com.example.demonats.dto.OperationLogDto;
+import com.example.demonats.dto.TelemetryDto;
+import com.example.demonats.dto.VehicleDto;
+import com.example.demonats.entity.Vehicle;
+import com.example.demonats.nats.NatsComponent;
+import com.example.demonats.service.VehicleService;
+import com.example.demonats.websocket.handler.WebSocketHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,7 +18,6 @@ import org.springframework.web.socket.WebSocketSession;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor

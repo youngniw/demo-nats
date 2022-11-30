@@ -1,4 +1,4 @@
-package com.example.testnats.nats;
+package com.example.demonats.nats;
 
 import io.nats.client.Connection;
 import io.nats.client.Message;
