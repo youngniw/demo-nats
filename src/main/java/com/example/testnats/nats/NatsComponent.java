@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 @Slf4j
 @Component
@@ -34,10 +31,14 @@ public class NatsComponent {
 
     /* 메시지 객체를 넘겼을 때의 publish */
 
-    public String request(String subject, String message) throws ExecutionException, InterruptedException, TimeoutException {
-        Future<Message> incoming = natsConnection.request(subject, message.getBytes(StandardCharsets.UTF_8));
-        Message msg = incoming.get(500, TimeUnit.MILLISECONDS);
+    // 요청 받음
+    public String request(String subject, String message) throws ExecutionException, InterruptedException {
+        CompletableFuture<Message> incoming = natsConnection.request(subject, message.getBytes(StandardCharsets.UTF_8));
+        CompletableFuture<Message> nextFuture = incoming.thenApply(msg -> {
+            log.info("print mgs: {}", msg.toString());
 
-        return new String(msg.getData(), StandardCharsets.UTF_8);
+            return msg;
+        });
+        return new String(nextFuture.get().getData(), StandardCharsets.UTF_8);
     }
 }
