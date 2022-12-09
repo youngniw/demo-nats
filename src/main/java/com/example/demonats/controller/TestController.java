@@ -5,7 +5,6 @@ import com.example.demonats.nats.NatsComponent;
 import com.example.demonats.websocket.handler.WebSocketHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,10 +36,8 @@ public class TestController {
 
     // 요청
     @GetMapping("/request")
-    public ResponseEntity<String> testRequest() throws ExecutionException, InterruptedException {
-        String response = natsComponent.request("msg.example2", "Request to example2");
-
-        return ResponseEntity.ok(response);
+    public void testRequest() throws ExecutionException, InterruptedException {
+        natsComponent.request("msg.vehicle.request.1234", "info");
     }
 
 

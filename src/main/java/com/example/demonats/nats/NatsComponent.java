@@ -31,14 +31,17 @@ public class NatsComponent {
 
     /* 메시지 객체를 넘겼을 때의 publish */
 
-    // 요청 받음
-    public String request(String subject, String message) throws ExecutionException, InterruptedException {
+    // 요청
+    public CompletableFuture<Message> request(String subject, String message) throws ExecutionException, InterruptedException {
         CompletableFuture<Message> incoming = natsConnection.request(subject, message.getBytes(StandardCharsets.UTF_8));
         CompletableFuture<Message> nextFuture = incoming.thenApply(msg -> {
-            log.info("print mgs: {}", msg.toString());
+            log.info("Reply message: {}", new String(msg.getData(), StandardCharsets.UTF_8));
+
+            /* 회신받은 데이터를 이용한 작업 처리 */
 
             return msg;
         });
-        return new String(nextFuture.get().getData(), StandardCharsets.UTF_8);
+
+        return nextFuture;
     }
 }
