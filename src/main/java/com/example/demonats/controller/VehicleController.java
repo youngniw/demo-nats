@@ -12,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -46,7 +48,11 @@ public class VehicleController {
         Vehicle vehicle = vehicleService.saveOrFindVehicle(telemetry.getSerialNumber());
         vehicleService.saveVehicleOperationLog(telemetry, vehicle);          // 차량 정보 + 차량 운행 정보 저장
 
-        return ResponseEntity.ok("success");
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{vehicleId}")
+                .buildAndExpand(vehicle.getVehicleId())
+                .toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     // 차량 정보 조회
