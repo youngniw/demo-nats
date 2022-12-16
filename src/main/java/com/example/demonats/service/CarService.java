@@ -1,5 +1,6 @@
 package com.example.demonats.service;
 
+import com.example.demonats.dto.CarCurrentStateDto;
 import com.example.demonats.dto.OperationLogDto;
 import com.example.demonats.dto.TelemetryDto;
 import com.example.demonats.dto.CarDto;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,6 +36,43 @@ public class CarService {
                 .carId(carBySerialNum.getCarId())
                 .serialNumber(carBySerialNum.getSerialNumber())
                 .build();
+    }
+
+    // 차량 최신 상태 정보 조회
+    @Transactional(readOnly = true)
+    public CarCurrentStateDto getCarCurrentStateInfo(int serialNumber) {
+        String stateTime = "운행 정보 없음";
+
+        OperationLog currentOperationLog = operationLogRepository.findDistinctFirstByCar_SerialNumberOrderByLogTimeDesc(serialNumber)
+                .orElseThrow(() -> new RuntimeException("차량 정보가 존재하지 않습니다."));
+
+        if (currentOperationLog.getGear() == 1) {
+            // 바로 직전의 운행 상태 조회 (반환: 직전의 운행 상태 시간~현재 시간 차이)
+            Optional<OperationLog> operationLogRunning = operationLogRepository.findFirstByCar_SerialNumberAndGearIsNotOrderByLogTimeDesc(serialNumber, 1);
+
+            if (operationLogRunning.isPresent())
+                stateTime = getTimeDifference(operationLogRunning.get().getLogTime(), LocalDateTime.now());
+        }
+        else {  // 바로 직전의 운행 정지 상태 조회 (반환: 직전의 정지 상태 시간~현재 시간 차이)
+            OperationLog operationLogWaiting = operationLogRepository.findFirstByCar_SerialNumberAndGearIsOrderByLogTimeDesc(serialNumber, 1)
+                    .orElseGet(() -> operationLogRepository.findFirstByCar_SerialNumberOrderByLogTime(serialNumber)
+                            .orElseThrow(() -> new RuntimeException("서버 내부 오류입니다.")));
+
+            stateTime = getTimeDifference(operationLogWaiting.getLogTime(), LocalDateTime.now());
+        }
+        return CarCurrentStateDto.builder()
+                .serialNumber(serialNumber)
+                .gear(currentOperationLog.getGear())
+                .stateTime(stateTime)
+                .build();
+    }
+
+    private String getTimeDifference(LocalDateTime startTime, LocalDateTime endTime) {
+        Duration duration = Duration.between(startTime, endTime);
+        if (duration.toHours() == 0L)
+            return String.format("%d분", duration.toMinutes());
+        else
+            return String.format("%d시간", duration.toHours());
     }
 
     // 차량 목록 기본 정보 조회

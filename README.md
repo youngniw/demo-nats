@@ -37,7 +37,7 @@
    - Subject
      - 모든 차량 실시간 운행 정보 조회: "msg.car.data"
      - 특정 차량 실시간 운행 정보 조회: "msg.car.data.{차량번호}"
-     - 차량 정보 요청(request): "msg.car.request.{차량번호}"
+     - 차량 최신 운행 상태 정보 요청(request): "msg.car.request.{차량번호}"
 
    <br/>
 

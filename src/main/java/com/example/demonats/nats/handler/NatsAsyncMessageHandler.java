@@ -51,14 +51,14 @@ public class NatsAsyncMessageHandler {
 
         // 차량 관련 요청 통로
         Subscription subToCarRequest = dispatcher.subscribe("msg.car.request.*", (message) -> {
-            if (message.getReplyTo() != null) {     // 차량 요청이 있을 시 (ex. msg.car.request.1234로 "info"라는 데이터를 담아 요청 받을 시, 차량 정보 반환)
+            if (message.getReplyTo() != null) {     // 차량 요청이 있을 시 (ex. msg.car.request.1234로 "info"라는 데이터를 담아 요청 받을 시, 차량 최신 운행 상태 정보 반환)
                 int serialNumber = Integer.parseInt(message.getSubject().split("\\.")[3]);
 
                 String data = new String(message.getData(), StandardCharsets.UTF_8);    // 요청 주제
-                if (data.equals("info")) {          // 차량 정보 조회
+                if (data.equals("info")) {          // 차량 현재 상태(운행 및 대기) 정보 조회
                     ObjectMapper mapper = new ObjectMapper();
                     try {
-                        natsConnection.publish(message.getReplyTo(), mapper.writeValueAsBytes(carService.getCarInfo(serialNumber)));
+                        natsConnection.publish(message.getReplyTo(), mapper.writeValueAsBytes(carService.getCarCurrentStateInfo(serialNumber)));
                     } catch (JsonProcessingException e) {
                         natsConnection.publish(message.getReplyTo(), "{}".getBytes());
                         throw new RuntimeException(e);
