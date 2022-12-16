@@ -10,11 +10,11 @@ import javax.persistence.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table
 @Entity
-public class Vehicle {
+public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    private Long vehicleId;
+    private Long carId;
 
     @Column(nullable = false)
     private Integer serialNumber;

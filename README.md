@@ -35,9 +35,9 @@
    <br/>
 
    - Subject
-     - 모든 차량 실시간 운행 정보 조회: "msg.vehicle.data"
-     - 특정 차량 실시간 운행 정보 조회: "msg.vehicle.data.{차량번호}"
-     - 차량 정보 요청(request): "msg.vehicle.request.{차량번호}"
+     - 모든 차량 실시간 운행 정보 조회: "msg.car.data"
+     - 특정 차량 실시간 운행 정보 조회: "msg.car.data.{차량번호}"
+     - 차량 정보 요청(request): "msg.car.request.{차량번호}"
 
    <br/>
 
@@ -55,12 +55,12 @@
        -p 4222:4222 \
        -p 8222:8222 \
        -p 8000:8000 \
-       nats --http_port 8222 -c /etc/nats/vehicle.conf
+       nats --http_port 8222 -c /etc/nats/car.conf
        ```
 
      - Window 운영체제
        ```
-       docker run --name nats -v $(pwd)/etc/nats:/etc/nats -p 4222:4222 -p 8222:8222 -p 8000:8000 nats --http_port 8222 -c /etc/nats/vehicle.conf
+       docker run --name nats -v $(pwd)/etc/nats:/etc/nats -p 4222:4222 -p 8222:8222 -p 8000:8000 nats --http_port 8222 -c /etc/nats/car.conf
        ```
 
    - docker로 nats 컨테이너 종료

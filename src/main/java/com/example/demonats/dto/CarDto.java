@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 @Getter
-public class VehicleDto {
-    private long vehicleId;
+public class CarDto {
+    private long carId;
     private int serialNumber;
 }

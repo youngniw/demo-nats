@@ -21,11 +21,11 @@ public class OperationLog {
     @Column
     private Long logId;
 
-    // 아래의 주석은 cascade 를 통해 Vehicle 먼저 저장 후에 OperationLog 가 저장되게 함
+    // 아래의 주석은 cascade 를 통해 Car 먼저 저장 후에 OperationLog 가 저장되게 함
     // @ManyToOne(cascade = CascadeType.PERSIST)
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "vehicle_id")
-    private Vehicle vehicle;
+    @JoinColumn(name = "car_id")
+    private Car car;
 
     @CreatedDate
     @Column(updatable = false)

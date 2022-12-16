@@ -1,6 +1,6 @@
 package com.example.demonats.nats.handler;
 
-import com.example.demonats.service.VehicleService;
+import com.example.demonats.service.CarService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nats.client.Connection;
@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class NatsAsyncMessageHandler {
     private final Connection natsConnection;
-    private final VehicleService vehicleService;
+    private final CarService carService;
 
 //    @Value("${nats.stream.subject}")
 //    private String subject;
@@ -38,7 +38,7 @@ public class NatsAsyncMessageHandler {
         dispatcher = natsConnection.createDispatcher((msg) -> {});
 
         // 구독 예시
-        Subscription subToVehicle = dispatcher.subscribe("msg.vehicle.telemetry", (message) -> {
+        Subscription subToCar = dispatcher.subscribe("msg.car.telemetry", (message) -> {
             String data = new String(message.getData(), StandardCharsets.UTF_8);
             log.info(String.format("Received Message from %s: %s", message.getSubject(), data));
 
@@ -47,19 +47,18 @@ public class NatsAsyncMessageHandler {
             if (message.getReplyTo() != null) {
                 natsConnection.publish(message.getReplyTo(), "OK".getBytes());      // 요청에 대한 응답 반환
             }
-            else ;      // 다시 응답 반환
         });
 
         // 차량 관련 요청 통로
-        Subscription subToVehicleRequest = dispatcher.subscribe("msg.vehicle.request.*", (message) -> {
-            if (message.getReplyTo() != null) {     // 차량 요청이 있을 시 (ex. msg.vehicle.request.1234로 "info"라는 데이터를 담아 요청 받을 시, 차량 정보 반환)
+        Subscription subToCarRequest = dispatcher.subscribe("msg.car.request.*", (message) -> {
+            if (message.getReplyTo() != null) {     // 차량 요청이 있을 시 (ex. msg.car.request.1234로 "info"라는 데이터를 담아 요청 받을 시, 차량 정보 반환)
                 int serialNumber = Integer.parseInt(message.getSubject().split("\\.")[3]);
 
                 String data = new String(message.getData(), StandardCharsets.UTF_8);    // 요청 주제
                 if (data.equals("info")) {          // 차량 정보 조회
                     ObjectMapper mapper = new ObjectMapper();
                     try {
-                        natsConnection.publish(message.getReplyTo(), mapper.writeValueAsBytes(vehicleService.getVehicleInfo(serialNumber)));
+                        natsConnection.publish(message.getReplyTo(), mapper.writeValueAsBytes(carService.getCarInfo(serialNumber)));
                     } catch (JsonProcessingException e) {
                         natsConnection.publish(message.getReplyTo(), "{}".getBytes());
                         throw new RuntimeException(e);
@@ -71,7 +70,7 @@ public class NatsAsyncMessageHandler {
 
     @PreDestroy
     private void destroy() {
-        dispatcher.unsubscribe("msg.vehicle.telemetry");
-        dispatcher.unsubscribe("msg.vehicle.request.*");
+        dispatcher.unsubscribe("msg.car.telemetry");
+        dispatcher.unsubscribe("msg.car.request.*");
     }
 }

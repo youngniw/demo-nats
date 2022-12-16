@@ -2,10 +2,10 @@ package com.example.demonats.controller;
 
 import com.example.demonats.dto.OperationLogDto;
 import com.example.demonats.dto.TelemetryDto;
-import com.example.demonats.dto.VehicleDto;
-import com.example.demonats.entity.Vehicle;
+import com.example.demonats.dto.CarDto;
+import com.example.demonats.entity.Car;
 import com.example.demonats.nats.NatsComponent;
-import com.example.demonats.service.VehicleService;
+import com.example.demonats.service.CarService;
 import com.example.demonats.websocket.handler.WebSocketHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,16 +24,16 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/vehicle")
-public class VehicleController {
-    private final VehicleService vehicleService;
+@RequestMapping("/car")
+public class CarController {
+    private final CarService carService;
     private final NatsComponent natsComponent;
     private final ObjectMapper objectMapper;
     private final WebSocketHandler webSocketHandler;
 
     // 차량 정보 저장
     @PostMapping("/telemetry")
-    public ResponseEntity<String> setMonitoringVehicleData(@RequestBody @Valid TelemetryDto telemetry) throws Exception {
+    public ResponseEntity<String> setMonitoringCarData(@RequestBody @Valid TelemetryDto telemetry) throws Exception {
         // 소켓 전달
         Set<WebSocketSession> sessions = webSocketHandler.getSessions();
         for (WebSocketSession session : sessions) {
@@ -42,40 +42,40 @@ public class VehicleController {
 
         // nats 서버로 전달
         ObjectMapper mapper = new ObjectMapper();
-        natsComponent.publish("msg.vehicle.data", mapper.writeValueAsString(telemetry));
-        natsComponent.publish("msg.vehicle.data." + telemetry.getSerialNumber(), mapper.writeValueAsString(telemetry));
+        natsComponent.publish("msg.car.data", mapper.writeValueAsString(telemetry));
+        natsComponent.publish("msg.car.data." + telemetry.getSerialNumber(), mapper.writeValueAsString(telemetry));
 
-        Vehicle vehicle = vehicleService.saveOrFindVehicle(telemetry.getSerialNumber());
-        vehicleService.saveVehicleOperationLog(telemetry, vehicle);          // 차량 정보 + 차량 운행 정보 저장
+        Car car = carService.saveOrFindCar(telemetry.getSerialNumber());
+        carService.saveCarOperationLog(telemetry, car);          // 차량 정보 + 차량 운행 정보 저장
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{vehicleId}")
-                .buildAndExpand(vehicle.getVehicleId())
+                .path("/{carId}")
+                .buildAndExpand(car.getCarId())
                 .toUri();
         return ResponseEntity.created(uri).build();
     }
 
     // 차량 정보 조회
     @GetMapping("/{serialNumber}")
-    public ResponseEntity<VehicleDto> getVehicleInfo(@PathVariable("serialNumber") int serialNumber) {
-        VehicleDto vehicleInfo = vehicleService.getVehicleInfo(serialNumber);
+    public ResponseEntity<CarDto> getCarInfo(@PathVariable("serialNumber") int serialNumber) {
+        CarDto carInfo = carService.getCarInfo(serialNumber);
 
-        return ResponseEntity.ok(vehicleInfo);
+        return ResponseEntity.ok(carInfo);
     }
 
     // 차량 목록 조회
     @GetMapping("/list")
-    public ResponseEntity<List<VehicleDto>> getVehicleListInfo() {
-        List<VehicleDto> vehicleInfoList = vehicleService.getVehicleListInfo();
+    public ResponseEntity<List<CarDto>> getCarListInfo() {
+        List<CarDto> carInfoList = carService.getCarListInfo();
 
-        return ResponseEntity.ok(vehicleInfoList);
+        return ResponseEntity.ok(carInfoList);
     }
 
     // 차량 운행 정보 조회
     @GetMapping("/operation-log")
-    public ResponseEntity<List<OperationLogDto>> getVehicleOperationHistory(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-        List<OperationLogDto> vehicleInfoList = vehicleService.getOperationLogList(startDate, endDate);
+    public ResponseEntity<List<OperationLogDto>> getCarOperationHistory(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+        List<OperationLogDto> carInfoList = carService.getOperationLogList(startDate, endDate);
 
-        return ResponseEntity.ok(vehicleInfoList);
+        return ResponseEntity.ok(carInfoList);
     }
 }

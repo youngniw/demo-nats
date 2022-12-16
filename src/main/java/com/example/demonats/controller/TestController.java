@@ -24,7 +24,13 @@ public class TestController {
 
     // 응답 없는 publish
     @GetMapping("/publish")
-    public void testPublish() {
+    public void testPublish() throws IOException {
+        // 소켓으로도 전달 (ws://localhost:8080/ws/data로 소켓 연결된 클라이언트에게도 데이터 전송)
+        Set<WebSocketSession> sessions = webSocketHandler.getSessions();
+        for (WebSocketSession session : sessions) {
+            session.sendMessage(new TextMessage("Publish by car"));
+        }
+
         natsComponent.publish("msg.example", "Publish by car");
     }
 
@@ -37,7 +43,7 @@ public class TestController {
     // 요청
     @GetMapping("/request")
     public void testRequest() throws ExecutionException, InterruptedException {
-        natsComponent.request("msg.vehicle.request.1234", "info");
+        natsComponent.request("msg.car.request.1234", "info");
     }
 
 
