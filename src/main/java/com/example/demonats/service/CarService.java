@@ -1,14 +1,14 @@
 package com.example.demonats.service;
 
-import com.example.demonats.dto.CarCurrentStateDto;
-import com.example.demonats.dto.OperationLogDto;
-import com.example.demonats.dto.TelemetryDto;
-import com.example.demonats.dto.CarDto;
+import com.example.demonats.dto.*;
 import com.example.demonats.entity.OperationLog;
 import com.example.demonats.entity.Car;
 import com.example.demonats.repository.OperationLogRepository;
 import com.example.demonats.repository.CarRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +84,31 @@ public class CarService {
                         .serialNumber(car.getSerialNumber())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    // 차량 목록 기본 정보 조회
+    @Transactional(readOnly = true)
+    public CarListPageDto getCarListPageInfo(int page, Integer serialNumber) {
+        PageRequest pageRequest = PageRequest.of(page-1, 8, Sort.by("carId").ascending());  // page 는 0부터 시작
+
+        Page<Car> cars;
+        if (serialNumber == null)
+            cars = carRepository.findAll(pageRequest);
+        else
+            cars = carRepository.findBySerialNumber(serialNumber, pageRequest);
+
+        return CarListPageDto.builder()
+                .totalPages(cars.getTotalPages())
+                .totalElements(cars.getTotalElements())
+                .numberOfElements(cars.getNumberOfElements())
+                .cars(cars.getContent().stream()
+                        .map(car -> CarDto.builder()
+                                .carId(car.getCarId())
+                                .serialNumber(car.getSerialNumber())
+                                .build())
+                        .collect(Collectors.toList())
+                )
+                .build();
     }
 
     public List<OperationLogDto> getOperationLogList(LocalDate startDate, LocalDate endDate) {

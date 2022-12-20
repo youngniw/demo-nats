@@ -1,5 +1,6 @@
 package com.example.demonats.controller;
 
+import com.example.demonats.dto.CarListPageDto;
 import com.example.demonats.dto.OperationLogDto;
 import com.example.demonats.dto.TelemetryDto;
 import com.example.demonats.dto.CarDto;
@@ -63,10 +64,11 @@ public class CarController {
         return ResponseEntity.ok(carInfo);
     }
 
-    // 차량 목록 조회
+    // 차량 목록 조회 (페이지)
     @GetMapping("/list")
-    public ResponseEntity<List<CarDto>> getCarListInfo() {
-        List<CarDto> carInfoList = carService.getCarListInfo();
+    public ResponseEntity<CarListPageDto> getCarListPageInfo(@RequestParam("page") int page,
+                                                             @RequestParam(value = "serialNumber", required = false) Integer serialNumber) {
+        CarListPageDto carInfoList = carService.getCarListPageInfo(page, serialNumber);
 
         return ResponseEntity.ok(carInfoList);
     }
