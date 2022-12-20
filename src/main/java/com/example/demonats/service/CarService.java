@@ -111,10 +111,15 @@ public class CarService {
                 .build();
     }
 
-    public List<OperationLogDto> getOperationLogList(LocalDate startDate, LocalDate endDate) {
+    public List<OperationLogDto> getOperationLogList(LocalDate startDate, LocalDate endDate, Integer serialNumber) {
         LocalDateTime startTime = LocalDateTime.of(startDate, LocalTime.of(0, 0));
         LocalDateTime endTime = LocalDateTime.of(endDate, LocalTime.of(23, 59, 59));
-        List<OperationLog> operationLogs = operationLogRepository.findAllByLogTimeBetweenOrderByLogTime(startTime, endTime);
+
+        List<OperationLog> operationLogs;
+        if (serialNumber == null)
+            operationLogs = operationLogRepository.findAllByLogTimeBetweenOrderByLogTime(startTime, endTime);
+        else
+            operationLogs = operationLogRepository.findLogBySerialNumberAndDate(startTime, endTime, serialNumber);
 
         return operationLogs.stream()
                 .map(operationLog -> OperationLogDto.builder()

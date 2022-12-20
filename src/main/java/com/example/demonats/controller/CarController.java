@@ -75,8 +75,10 @@ public class CarController {
 
     // 차량 운행 정보 조회
     @GetMapping("/operation-log")
-    public ResponseEntity<List<OperationLogDto>> getCarOperationHistory(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
-        List<OperationLogDto> carInfoList = carService.getOperationLogList(startDate, endDate);
+    public ResponseEntity<List<OperationLogDto>> getCarOperationHistory(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                                                        @RequestParam(value = "serialNumber", required = false) Integer serialNumber) {
+        List<OperationLogDto> carInfoList = carService.getOperationLogList(startDate, endDate, serialNumber);
 
         return ResponseEntity.ok(carInfoList);
     }
